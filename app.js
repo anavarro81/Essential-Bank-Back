@@ -30,6 +30,11 @@ app.use(express.json());
 
 app.use('/users', routerUser);
 
+app.get("/", (req, res) => {
+  res.send("Express on Vercel"); 
+}); 
+
+
 app.listen(PORT, () => {
   console.log(`Listening http://localhost:${PORT}`);
 });
