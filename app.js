@@ -1,43 +1,30 @@
-// Importo servidor. 
-const express = require('express');
-
-//! Permite llamar al back desde el FRONT
-const cors = require('cors');
-
-// Importo conexión a BBDD.
-const { connect } = require('./src/bd');
-
-const routerUser = require('./src/routers/user.routes');
-
-
-const PORT = 5000;
+const express = require("express"); 
 const app = express();
+const cors = require("cors");
+const userRoutes = require('./src/routers/user.routes')
+const { connect } = require ('./src/bd')
 
 connect();
 
-//! Permite llamar al back desde el FRONT usando un endpoint diferente. localhost:3000/5000. 
 app.use(
-  cors({
-    origin: "*",    
-    //origin: "http://localhost:3001/",
-    credentials: true,
-  })
+     cors({
+          origin: "*",
+          credential: true,
+     })
 );
 
 app.use(express.json());
 
+app.use("/users", userRoutes);// ruta inicial
 
-
-app.use('/users', routerUser);
 
 app.get("/", (req, res) => {
-  res.send("Express on Vercel"); 
+     res.send("Express on Vercel"); 
 }); 
 
 
-app.listen(PORT, () => {
-  console.log(`Listening http://localhost:${PORT}`);
-});
+const PORT = process.env.PORT || 5000; 
 
-//
+app.listen(PORT, () => { console.log(`Server is running on port ${PORT}`); });
+
 module.exports = app;
