@@ -9,7 +9,9 @@ const userSchema = new Schema(
     password: { type: String, required: true },
     ID: { type: String, required: true },    
     dateOfBirth: {type: Date, required:true},
-    phoneNumber: { type: String, required: true }    
+    phoneNumber: { type: String, required: true },   
+    accounts: [{ type: Schema.Types.ObjectId, ref: 'Accounts' }],
+    favourites: [{ type: Schema.Types.ObjectId, ref: 'favouriteTransations' }]
   
   },
   {

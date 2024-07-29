@@ -26,31 +26,22 @@ const register = async (req, res) => {
     // }
     if (await usedEmail(newUser.email)) {
       return res.status(400).json({ message: " email introducido ya existe" });
-    }    
+    }       
 
-    console.log('>> newUser : ', newUser)
-
+    // Encripto la password. 
     newUser.password = bcrypt.hashSync(newUser.password, 10);    
 
-    const createdUser = await newUser.save();
+    console.log('>> newUser : ', newUser._id)
+    console.log('>> newUser.accounts : ', newUser.accounts)
+    
 
-    if (createdUser) {
-
-      console.log('createdUser-OK');
-
-      var numAccount = Math.floor(Math.random() * 10);     
-
-      console.log('numAccount ', numAccount);
+      var numAccount = Math.floor(Math.random() * 10); 
       
-      console.log('>> randomAccounts : ', randomAccounts)
-      console.log(typeof randomAccounts)
-
-      console.log('>> randomAccounts[numAccount].Bank : ', randomAccounts[numAccount].Bank)
-      
+      console.log('>> numAccount : ', numAccount)
 
       const accountData = {
-        UserID: createdUser._id,
-        Holder: createdUser.name,
+        UserID: newUser._id,
+        Holder: newUser.name,
         Bank: randomAccounts[numAccount].Bank,
         IBAN: randomAccounts[numAccount].IBAN,
         Balance: randomAccounts[numAccount].Balance,
@@ -61,14 +52,16 @@ const register = async (req, res) => {
 
       console.log('result ', result);
 
-      if (result == 201) {
+      if (result.code == 201) {
+        newUser.accounts.push(result.account_id)
+        const createdUser = await newUser.save();
         return res.status(201).json(createdUser);
       } else {
-        return res.status(500).json(result)
+        return res.status(500).json(result.error)
       }
         
       
-    }
+    
 
     return res.status(201).json(createdUser);
   } catch (error) {
@@ -105,7 +98,7 @@ const login = async (req, res) => {
 // Obtiene todos los usuarios
 const getUsers = async (req, res) => {
   try {
-    const allUser = await User.find()
+    const allUser = await User.find().populate('accounts')
     return res.status(200).json(allUser);
   } catch (error) {
     return res.status(500).json(error);
@@ -116,7 +109,7 @@ const getUsers = async (req, res) => {
     try {
       
       const { id } = req.params;
-      const selectedUser = await User.findById(id)
+      const selectedUser = await User.findById(id).populate('accounts')
 
       if (!selectedUser) {
         return res.status(404).json({message: `No encontra usuario con id: ${id}` })          
@@ -190,11 +183,11 @@ const getUsers = async (req, res) => {
       if (createdAccount) {
         console.log('Se ha creado la cuenta correctamente')
         console.log('>> createdAccount : ', createdAccount)
-        return 201
+        return {code: 201, account_id: createdAccount._id}
       }
 
     } catch (error) {
-      return 500
+      return {code: 500, error: error}
     }
 
   }
