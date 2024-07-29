@@ -15,7 +15,8 @@ const favouriteTransationSchema = new Schema(
         type: 
             {type: String,
             enum: ['pago por servicio', 'trasferencia']
-        }
+        },
+        isFavourite: {type: Boolean}
         
     }
 );
