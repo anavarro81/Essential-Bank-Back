@@ -3,7 +3,7 @@ const app = express();
 const cors = require("cors");
 const userRoutes = require('./src/routers/user.routes')
 const accountRoutes = require('./src/routers/account.routes')
-const favouriteTransationRoutes = require('./src/routers/favouritesTransation.routes')
+const transationRoutes = require('./src/routers/transation.routes')
 const { connect } = require ('./src/bd')
 
 connect();
@@ -19,7 +19,7 @@ app.use(express.json());
 
 app.use("/users", userRoutes);
 app.use("/accounts", accountRoutes);
-app.use("/favorites", favouriteTransationRoutes)
+app.use("/transations", transationRoutes)
 
 app.get("/", (req, res) => {
      res.send("Express on Vercel"); 

@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const favouriteTransationSchema = new Schema(
+const transationSchema = new Schema(
     {
         UserID: {type: mongoose.ObjectId},             
         BeneficiaryName: {type: String},
@@ -21,6 +21,6 @@ const favouriteTransationSchema = new Schema(
     }
 );
 
-const favouriteTransation = mongoose.model("favouriteTransations", favouriteTransationSchema)
+const transation = mongoose.model("transations", transationSchema)
 
-module.exports = favouriteTransation;
+module.exports = transation;

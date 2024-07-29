@@ -1,31 +1,31 @@
-const FavouriteTranstion = require ("../models/favouriteTransation.model")
+const Transation = require ("../models/transation.model")
 const User = require("../models/user.model");
 
 
 // Alta de nueva operacion favorita. 
 // Se asocia la operacion al usuario. 
-const newfavourite = async (req, res) => {
+const newTransation = async (req, res) => {
     try {        
-        const newFavourite = new FavouriteTranstion(req.body)
+        const newTransation = new Transation(req.body)
 
 
-        const createdFavourite = await newFavourite.save();
+        const createdTransation = await newTransation.save();
         
-        if (createdFavourite) {
+        if (createdTransation) {
 
-            // Se inserta el id de operacion en el array favourites del usuario para vincurlarla con este. 
+            // Se inserta el id de operacion en el array Transations del usuario para vincurlarla con este. 
 
             console.log('req.body.Userid ', req.body.UserID);
-            console.log('createdFavourite._id ', createdFavourite._id);
+            console.log('createdTransation._id ', createdTransation._id);
 
             const updatedUser = await User.findOneAndUpdate(
               {_id: req.body.UserID},
-              {$push: {favourites: createdFavourite._id}}
+              {$push: {Transations: createdTransation._id}}
             );
             
             console.log('updatedUser > ', updatedUser);
             
-            return res.status(200).json(createdFavourite)
+            return res.status(200).json(createdTransation)
         
           }
     } catch (error) {
@@ -34,13 +34,13 @@ const newfavourite = async (req, res) => {
     }
 }
 
-// Obtiene las operaciones favoritas de un usuario. 
-const getFavouriteTransation = async (req, res) => {
+//Obtiene las operaciones favoritas de un usuario. 
+const getTransationTransation = async (req, res) => {
     try {
       
       const { id } = req.params;
-      // const selectedTransation = await FavouriteTranstion.findById(id)
-      const selectedTransation = await FavouriteTranstion.find({ UserID: id })
+      // const selectedTransation = await Transation.findById(id)
+      const selectedTransation = await Transation.find({ UserID: id })
 
       
 
@@ -60,13 +60,13 @@ const getFavouriteTransation = async (req, res) => {
   }
 
   // Obtiene todas las trasferencias favoritas de un usuario
-const getFavouritesTransfers = async (req, res) => {   
+const getTransationsTransfers = async (req, res) => {   
        
   
     try {
       const {id} = req.params;      
 
-      const selectedTransation = await FavouriteTranstion.find(
+      const selectedTransation = await Transation.find(
         { UserID: id,
           type: 'trasferencia'
         })        
@@ -82,14 +82,14 @@ const getFavouritesTransfers = async (req, res) => {
   }
 
   // Obtiene los pagos por servicio favoritos de un usuario.
-const getFavouritesPays = async (req, res) => {   
+const getTransationsPays = async (req, res) => {   
        
   
   
     try {
       const {id} = req.params;      
 
-      const selectedTransation = await FavouriteTranstion.find(
+      const selectedTransation = await Transation.find(
         { UserID: id,
           type: 'pago por servicio'
         })  
@@ -112,4 +112,5 @@ const getFavouritesPays = async (req, res) => {
   }
 
 
-module.exports = { newfavourite, getFavouriteTransation, getFavouritesTransfers, getFavouritesPays };
+module.exports = { newTransation, getTransationTransation, getTransationsTransfers, getTransationsPays };
+

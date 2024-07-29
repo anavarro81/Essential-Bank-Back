@@ -10,7 +10,7 @@ const userSchema = new Schema(
     birthDate: {type: Date, required:true},
     phoneNumber: { type: String, required: true },   
     accounts: [{ type: Schema.Types.ObjectId, ref: 'Accounts' }],
-    favourites: [{ type: Schema.Types.ObjectId, ref: 'favouriteTransations' }]
+    favourites: [{ type: Schema.Types.ObjectId, ref: 'transations' }]
   
   },
   {
