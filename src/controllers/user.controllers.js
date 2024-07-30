@@ -1,5 +1,6 @@
 const User = require("../models/user.model");
 const Account = require("../models/account.model");
+const {generateToten} = require ('../controllers/otp.controller')
 const {randomAccounts}  = require("../data/randomAccounts");
 
 const bcrypt = require("bcrypt");
@@ -13,31 +14,38 @@ const { generateSign } = require("../utils/jwt");
 
 
 const register = async (req, res) => {
-  
-  
+
+
+  console.log('Estoy en register...');
   
   try {
+    
     const newUser = new User(req.body);
+
+    
+    
+    
     if (!validateEmail(newUser.email)) {
       return res.status(400).json({ message: " email invalido" });
     }
+
     // if (!validatePassword(newUser.password)) {
     //   return res.status(400).json({ message: " password invalido" });
     // }
+
     if (await usedEmail(newUser.email)) {
-      return res.status(400).json({ message: " email introducido ya existe" });
+      console.log('email ya existe');
+      return res.status(409).json({ error: 'El email ya existe' });
     }       
 
-    // Encripto la password. 
-    newUser.password = bcrypt.hashSync(newUser.password, 10);    
 
-    console.log('>> newUser : ', newUser._id)
-    console.log('>> newUser.accounts : ', newUser.accounts)
+    // En la segunda pantalla no pide la password. 
+    // newUser.password = bcrypt.hashSync(newUser.password, 10);    
+
     
 
       var numAccount = Math.floor(Math.random() * 10); 
       
-      console.log('>> numAccount : ', numAccount)
 
       const accountData = {
         UserID: newUser._id,
@@ -50,37 +58,55 @@ const register = async (req, res) => {
 
       const result = await createAccount(accountData) 
 
-      console.log('result ', result);
 
       if (result.code == 201) {
+        
         newUser.accounts.push(result.account_id)
         const createdUser = await newUser.save();
-        return res.status(201).json(createdUser);
+
+        let response = await generateToten(createdUser._id, createdUser.email)
+
+
+        if (response.code == 200) {
+          return res.status(201).json(createdUser);  
+        } else {
+          return res.status(500).json(response.message)
+        }
+        
       } else {
         return res.status(500).json(result.error)
-      }
-        
-      
+      }          
     
 
-    return res.status(201).json(createdUser);
+    
   } catch (error) {
+    console.log('Error en register ', error);
     return res.status(500).json(error);
   }
 };
 
 const login = async (req, res) => {
+  
+  console.log('login');
+  
   try {
+
+    
   
     const userInfo = await User.findOne({ email: req.body.email })    
 
+    console.log('userInfo > ', userInfo);
+
     if (!userInfo) {
+      console.log('Email no encontrado');
       return res.status(404).json({ message: "email no encontrado" });
-    }      
+    }       
+
+    console.log('req.body.password ', req.body.password);
+    console.log('userInfo.password', userInfo.password);
     
-
-
     if (!bcrypt.compareSync(req.body.password, userInfo.password)) {
+      console.log('password incorrecto');
       return res.status(404).json({ message: "password incorrecto" });
     }  
     
@@ -193,6 +219,61 @@ const getUsers = async (req, res) => {
   }
   
 
+  const deleteAllUser = async (req, res) => {
+    try {
+      const result = await User.deleteMany({});
+      console.log(`Se han borrado ${result.deletedCount} registros.`);
+      res.status(200).json({message: 'Se han borrado todos los usuarios'})
+    } catch (error) {
+      console.error('Error al borrar los registros:', error);
+      res.status(500).json({message: `Error al borraro los usuarios ${error}`})
+    }
+  }
 
 
-module.exports = { register, login, updateUser, deleteUser, getUsers, getUser  };
+  const setPassword = async (req, res) => {
+    
+    console.log('>> setPassword ', setPassword);
+    console.log('req.body ', req.body);
+
+    try {
+      
+      const newPassword = bcrypt.hashSync(req.body.password, 10); 
+
+      console.log('newPassword ', newPassword);
+
+      const userInfo = await User.findOne({ email: req.body.email })
+
+      console.log('userInfo ', userInfo);
+
+      if (userInfo) {
+        const updatedUser = await User.findByIdAndUpdate(
+          userInfo._id,
+          {
+            $set: {
+              password: newPassword            
+            }
+          },
+          { new: true }
+        );
+
+        if (updateUser) {
+          res.status(200).json(updatedUser)
+        }
+        
+      } else {
+        res.status(404).json({error: 'No se ha encontrado el email '})
+      }
+      
+
+
+
+      
+    } catch (error) {
+      console.log('error en setPassword ', error);
+    }
+  }
+
+
+
+module.exports = { register, login, updateUser, deleteUser, getUsers, getUser, deleteAllUser, setPassword  };
