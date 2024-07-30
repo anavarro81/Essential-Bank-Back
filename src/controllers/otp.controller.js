@@ -32,7 +32,7 @@ const generateToten = async (id, email) => {
 
         if (createdOtp) {
 
-            sendReceiptEmail(otp)
+            // sendReceiptEmail(otp)
 
             return {code: 200, messaje: 'token creado correctamente'}
         }

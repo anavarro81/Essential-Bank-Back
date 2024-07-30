@@ -1,5 +1,5 @@
 const express = require("express");
-const {withdrawMoney} = require("../controllers/account.controller");
+const {withdrawMoney, deleteAllAccounts, getAccountByIBAN} = require("../controllers/account.controller");
 const accountRoutes = express.Router();
 
 
@@ -12,9 +12,10 @@ const accountRoutes = express.Router();
 
 // userRoutes.put("/update/:id", updateUser);
 
-// userRoutes.delete("/delete/:id", deleteUser);
+accountRoutes.delete("/deleteAllAccounts", deleteAllAccounts);
 
 accountRoutes.put("/withdraw-money/:id", withdrawMoney);
+accountRoutes.get("/get-account-by-IBAN/:IBAN", getAccountByIBAN)
 
 
 module.exports= accountRoutes;

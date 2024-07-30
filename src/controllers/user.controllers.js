@@ -105,10 +105,11 @@ const login = async (req, res) => {
     console.log('req.body.password ', req.body.password);
     console.log('userInfo.password', userInfo.password);
     
-    if (!bcrypt.compareSync(req.body.password, userInfo.password)) {
-      console.log('password incorrecto');
-      return res.status(404).json({ message: "password incorrecto" });
-    }  
+    //FIXME: Volver a validar con la password encriptada
+    // if (!bcrypt.compareSync(req.body.password, userInfo.password)) {
+    //   console.log('password incorrecto');
+    //   return res.status(404).json({ message: "password incorrecto" });
+    // }  
     
     const token = generateSign(userInfo._id, userInfo.email);   
 
@@ -237,10 +238,12 @@ const getUsers = async (req, res) => {
     console.log('req.body ', req.body);
 
     try {
-      
-      const newPassword = bcrypt.hashSync(req.body.password, 10); 
 
-      console.log('newPassword ', newPassword);
+
+      //FIXME: Volver a encriptar password. 
+      // const newPassword = bcrypt.hashSync(req.body.password, 10); 
+
+      
 
       const userInfo = await User.findOne({ email: req.body.email })
 
@@ -251,7 +254,8 @@ const getUsers = async (req, res) => {
           userInfo._id,
           {
             $set: {
-              password: newPassword            
+              //FIXME: Poner aqui la password encriptada. 
+              password: req.body.password                
             }
           },
           { new: true }

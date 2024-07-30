@@ -8,6 +8,8 @@ const accountSchema = new Schema(
         Bank: {type: String}, 
         IBAN: {type: String}, 
         Balance: {type: Number},
+        Currency: {type: String},
+        CurrencySymbol: {type: String}
         
     }
 );

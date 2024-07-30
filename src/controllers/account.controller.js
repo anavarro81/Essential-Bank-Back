@@ -22,7 +22,7 @@ const withdrawMoney = async (req, res) => {
             console.log('>> Descontar saldo...')
             console.log(typeof req.body.amount)
             newBalance = selectedAccount.Balance - req.body.amount
-            console.log('>> newBalance ', newBalance)
+            console.log('>> newBalance ', newBalance) 
 
         } else {
             return res.status(500).json({error: `No se ha encontrado la cuenta con id: ${id} `});
@@ -45,7 +45,7 @@ const withdrawMoney = async (req, res) => {
         console.log('>> updatedAccount...', updatedAccount)
 
         if (!updatedAccount) {
-            return res.status(404).json({ message: `Transaccion realizada correctamente. El nuevo monto es: ${newBalance}` });
+            return res.status(200).json({ message: `Transaccion realizada correctamente. El nuevo monto es: ${newBalance}` });
         }
         return res.status(200).json(updatedAccount);
     } catch (error) {
@@ -53,4 +53,55 @@ const withdrawMoney = async (req, res) => {
       return res.status(500).json(error);
     }
   };
-  module.exports = {withdrawMoney};
+
+  const deleteAllAccounts = async (req, res) => {
+    try {
+      const result = await Account.deleteMany({});
+      console.log(`Se han borrado ${result.deletedCount} registros.`);
+      res.status(200).json({message: 'Se han borrado todas las cuentas'})
+    } catch (error) {
+      console.error('Error al borrar los registros:', error);
+      res.status(500).json({message: `Error al borraro las cuentas ${error}`})
+    }
+  }
+
+
+  // Obtiene la informacón de la cuenta a partir del IBAN. 
+  const getAccountByIBAN = async (req, res) => {
+    
+    console.log('Estoy en getAccountByIBAN');
+
+    try {
+
+        const { IBAN } = req.params;
+
+        console.log('IBAN: ', IBAN);
+        
+        const IBANInfo = await Account.findOne({ IBAN: IBAN })
+
+        console.log('IBANInfo ', IBANInfo);
+
+        if (!IBANInfo) {
+            res.status(404).json({error: 'El IBAN indicado no existe'})
+        } else {
+            res.status(200).json(IBANInfo)
+        }
+
+
+    } catch (error) {
+        console.log(`Se ha producido un error al obtener el IBAN ${error}`)
+    }    
+
+    
+
+
+
+    // Busco el IBAN en BBDD, si no existe devuelvo error. 
+
+
+
+
+
+  }
+
+  module.exports = {withdrawMoney, deleteAllAccounts, getAccountByIBAN};
