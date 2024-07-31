@@ -1,5 +1,5 @@
 const randomAccounts = 
-[
+
   [
     {
       "IBAN": "ES5420733381441998356218",
@@ -143,6 +143,6 @@ const randomAccounts =
     }
   ]
   
-]
+
 
 module.exports = {randomAccounts}

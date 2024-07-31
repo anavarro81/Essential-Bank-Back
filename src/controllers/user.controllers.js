@@ -44,7 +44,7 @@ const register = async (req, res) => {
 
     
 
-      var numAccount = Math.floor(Math.random() * 10); 
+      var numAccount = Math.floor(Math.random() * 20); 
       
 
       const accountData = {

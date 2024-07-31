@@ -31,8 +31,9 @@ const generateToten = async (id, email) => {
         
 
         if (createdOtp) {
-
-            // sendReceiptEmail(otp)
+             
+            //FIXME: Activar/Desactivar segun el momento. 
+            sendReceiptEmail(otp)
 
             return {code: 200, messaje: 'token creado correctamente'}
         }
@@ -52,7 +53,15 @@ const checkToken = async(req, res) => {
 
     try {
 
-        const userOtp = await Otp.findOne({ email: req.body.email })     
+        // const userOtp = await Otp.findOne({ email: req.body.email }).sort()     
+
+        const { email, token } = req.body;
+
+        console.log('email: ', email);
+        console.log('token: ', token);
+        
+        // Obtiene el registro mas reciente para el email.
+        const userOtp = await Otp.find({ email }).sort({ createdAt: -1 }).limit(1);
 
         console.log('userOtp ', userOtp);
 
@@ -63,10 +72,10 @@ const checkToken = async(req, res) => {
             return {code: 404, message: 'Email no encontrado'}
         }
 
-        console.log('userOtp.token > ', userOtp.token);
+        console.log('userOtp.token > ', userOtp[0].token);
 
 
-        if (userOtp.token == req.body.token) {   
+        if (userOtp[0].token == token) {   
             console.log('token correcto');         
             return res.status(200).json({message: "OTP correcto"})
         } else {
