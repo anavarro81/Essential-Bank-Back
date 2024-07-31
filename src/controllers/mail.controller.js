@@ -18,15 +18,21 @@ const transporter = nodemailer.createTransport({
 
 async function sendReceiptEmail(data) {
 
-    console.log('>> sendReceiptEmail');
+    console.log('>> sendReceiptEmail <<');
     console.log('data == ', data);
 
-    const info = await transporter.sendMail({
-        from: "otp.essentialBank.com",             
-        to: data.email,            
-        subject: `Verifica tu código de acceso | Essential Bank`, 
-        html: `<p>  Introduce el siguiente código para verificar tu correo  ${data.token} </p>`
-    })
+    try {
+        const info = await transporter.sendMail({
+            from: "otp.essentialBank.com",             
+            to: data.email,            
+            subject: `Verifica tu código de acceso | Essential Bank`, 
+            html: `<p>  Introduce el siguiente código para verificar tu correo  ${data.token} </p>`
+        })
+            
+    } catch (error) {
+        console.log('Se ha producido un error ', error);        
+    }
+
 
     console.log("Message sent: %s", info);
 
