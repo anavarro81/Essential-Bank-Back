@@ -4,6 +4,8 @@ const dotenv = require("dotenv").config();
 const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;
 const EMAIL_MAIL = process.env.EMAIL_MAIL;
 
+console.log('>> process.env.EMAIL_MAIL ', process.env.EMAIL_MAIL);
+
 
 const transporter = nodemailer.createTransport({
     service: "gmail", 
@@ -15,6 +17,9 @@ const transporter = nodemailer.createTransport({
 });
 
 async function sendReceiptEmail(data) {
+
+    console.log('>> sendReceiptEmail');
+    console.log('data == ', data);
 
     const info = await transporter.sendMail({
         from: "otp.essentialBank.com",             
