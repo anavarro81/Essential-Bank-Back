@@ -34,7 +34,7 @@ async function sendReceiptEmail(data) {
     }
 
 
-    console.log("Message sent: %s", info);
+    
 
 }
 sendReceiptEmail().catch(console.error);
