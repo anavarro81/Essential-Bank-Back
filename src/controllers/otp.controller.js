@@ -34,7 +34,7 @@ const generateToten = async (id, email) => {
         if (createdOtp) {
              
             //FIXME: Activar/Desactivar segun el momento. 
-            console.log('Voy a mandar el correo');
+            console.log('Voy a mandar el correo >> ');
             await sendReceiptEmail(otp)
             console.log('Vuelvo de mandar el correo')
 
