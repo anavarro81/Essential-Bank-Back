@@ -35,7 +35,8 @@ const generateToten = async (id, email) => {
              
             //FIXME: Activar/Desactivar segun el momento. 
             console.log('Voy a mandar el correo');
-            sendReceiptEmail(otp)
+            await sendReceiptEmail(otp)
+            console.log('Vuelvo de mandar el correo')
 
             return {code: 200, messaje: 'token creado correctamente'}
         }
