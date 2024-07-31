@@ -16,8 +16,9 @@ const transporter = nodemailer.createTransport({
 
 module.exports.sendReceiptEmail = (data) => {       
 
-    // console.log('>> EMAIL_MAIL : ', EMAIL_MAIL)
-    // console.log('>> EMAIL_PASSWORD >> : ', EMAIL_PASSWORD)
+    console.log('>> EMAIL_MAIL : ', EMAIL_MAIL)
+    console.log('>> EMAIL_PASSWORD >> : ', EMAIL_PASSWORD)
+
 
     transporter 
         .sendMail({
